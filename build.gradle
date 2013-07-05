@@ -1,0 +1,17 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+mainClassName = "com.trovit.hdfstree.HdfsTree"
+
+repositories {
+        mavenCentral()
+}
+
+dependencies {
+    compile 'com.google.guava:guava:12.0'
+    compile 'org.slf4j:slf4j-api:1.6.1'
+    compile 'ch.qos.logback:logback-classic:0.9.28'
+    compile 'ch.qos.logback:logback-core:0.9.28'
+    compile 'commons-cli:commons-cli:1.2'
+    testCompile 'junit:junit:4.11'
+}
