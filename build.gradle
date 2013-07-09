@@ -4,7 +4,10 @@ apply plugin: 'application'
 mainClassName = "com.trovit.hdfstree.HdfsTree"
 
 repositories {
-        mavenCentral()
+    mavenCentral()
+    maven {
+        url "https://repository.cloudera.com/artifactory/cloudera-repos"
+    }
 }
 
 dependencies {
@@ -13,5 +16,6 @@ dependencies {
     compile 'ch.qos.logback:logback-classic:0.9.28'
     compile 'ch.qos.logback:logback-core:0.9.28'
     compile 'commons-cli:commons-cli:1.2'
+    compile 'org.apache.hadoop:hadoop-core:0.20.2-cdh3u4'
     testCompile 'junit:junit:4.11'
 }
