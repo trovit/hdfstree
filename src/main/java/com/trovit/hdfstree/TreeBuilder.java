@@ -29,7 +29,7 @@ public class TreeBuilder {
       List<String> subdirectories = fsInspector.listSubDirs(currentPath);
       for (String subDir : subdirectories) {
         TreeNode child = treeNode.addChild(subDir);
-        buildTreeRecursively(child, currentPath + "/" + subDir, level + 1);
+        buildTreeRecursively(child, fsInspector.addSubdirToCurrent(currentPath, subDir), level + 1);
       }
     }
   }

@@ -9,21 +9,17 @@ import org.apache.hadoop.fs.Path;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * User: mdepalol
- */
 public class HDFSInspector implements FSInspector {
   FileSystem fs;
 
   public HDFSInspector() {
-    // get a hadoop conf.
-    Configuration conf = new Configuration();
     try {
+      Configuration conf = getHadoopConf();
       fs = FileSystem.get(conf);
-    } catch (IOException e) {
-      e.printStackTrace();
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+      System.exit(1);
     }
-
   }
 
   @Override
@@ -32,19 +28,18 @@ public class HDFSInspector implements FSInspector {
     try {
       exists = fs.exists(new Path(path));
     } catch (IOException e) {
-      e.printStackTrace();
+      System.out.println(e.getMessage());
     }
     return exists;
-
   }
 
   @Override
   public boolean isDirectory(String path) {
     boolean isDir = false;
     try {
-      isDir = !fs.isFile(new Path(path));
+      isDir = fs.getFileStatus(new Path(path)).isDir();
     } catch (IOException e) {
-      e.printStackTrace();
+      System.out.println(e.getMessage());
     }
     return isDir;
   }
@@ -55,12 +50,30 @@ public class HDFSInspector implements FSInspector {
     try {
       for (FileStatus fileStatus : fs.listStatus(new Path(currentPath))) {
         if (!fs.isFile(fileStatus.getPath())) {
-          subdirs.add(fileStatus.getPath().toString());
+          subdirs.add(fileStatus.getPath().getName());
         }
       }
     } catch (IOException e) {
-      e.printStackTrace();
+      System.out.println(e.getMessage());
     }
     return subdirs;
+  }
+
+  @Override
+  public String addSubdirToCurrent(String path, String subdir) {
+    Path current = new Path(path, subdir);
+    return current.toString();
+  }
+
+  private Configuration getHadoopConf() throws Exception {
+    Configuration conf = new Configuration();
+    String hadoop_home = System.getenv("HADOOP_HOME");
+    if (hadoop_home == null) {
+      throw new Exception("HADOOP_HOME is not defined in the system.");
+    }
+    conf.addResource(new Path(hadoop_home+"/conf/hdfs-site.xml"));
+    conf.addResource(new Path(hadoop_home+"/conf/mapred-site.xml"));
+    conf.addResource(new Path(hadoop_home+"/conf/core-site.xml"));
+    return conf;
   }
 }

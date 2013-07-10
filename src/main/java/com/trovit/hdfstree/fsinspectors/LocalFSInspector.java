@@ -6,9 +6,6 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * User: mdepalol
- */
 public class LocalFSInspector implements FSInspector {
 
   @Override
@@ -36,12 +33,21 @@ public class LocalFSInspector implements FSInspector {
   public List<String> listSubDirs(String currentPath) {
     List<String> subdirs = Lists.newArrayList();
     File file = new File(currentPath);
-    List<File> subFiles = Arrays.asList(file.listFiles());
-    for (File subFile : subFiles) {
-      if (subFile.isDirectory()) {
-        subdirs.add(subFile.getName());
+    if (file.canRead()) {
+      List<File> subFiles = Arrays.asList(file.listFiles());
+      for (File subFile : subFiles) {
+        if (subFile.isDirectory()) {
+          subdirs.add(subFile.getName());
+        }
       }
+    } else {
+      System.out.println("Don't have permission to read: " + file.toString() + ". Omitting.");
     }
     return subdirs;
+  }
+
+  @Override
+  public String addSubdirToCurrent(String path, String subdir) {
+    return path + "/" + subdir;
   }
 }

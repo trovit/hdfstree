@@ -2,9 +2,6 @@ package com.trovit.hdfstree.displayers;
 
 import com.trovit.hdfstree.TreeNode;
 
-/**
- * User: mdepalol
- */
 public class ConsoleDisplayer implements Displayer {
   Prefix prefix;
 
