@@ -19,4 +19,7 @@ public interface Displayer {
 
   // display the tree on screen.
   void display(TreeNode tree);
+
+  // display size as well.
+  void setDisplaySize();
 }

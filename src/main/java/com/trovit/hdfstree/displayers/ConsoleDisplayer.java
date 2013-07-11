@@ -21,22 +21,64 @@ import com.trovit.hdfstree.TreeNode;
 public class ConsoleDisplayer implements Displayer {
   Prefix prefix;
 
+  private boolean displaySize = false;
+
   @Override
   public void display(TreeNode tree) {
     prefix = new Prefix();
+
+    // precalculate the sizes.
+    if (displaySize) {
+      tree.getSize();
+    }
+
     displayNode(tree, 0);
   }
 
+  @Override
+  public void setDisplaySize() {
+    displaySize = true;
+  }
+
   public void displayNode(TreeNode node, int level) {
-    String prefixString = prefix.getPrefix(level);
-    System.out.println(prefixString + node.getPath());
-    if (node.hasChildren()) {
-      for (TreeNode subTree : node.getChildren()) {
-        displayNode(subTree, level + 1);
+    if (node.isDir()) {
+      String prefixString = prefix.getPrefix(level);
+      System.out.print(prefixString + node.getPath());
+      if (displaySize) {
+        System.out.println( " ["+getHumanReadableSize(node.getSize())+"]");
+      } else {
+        System.out.println();
+      }
+      if (node.hasChildren()) {
+        for (TreeNode subTree : node.getChildren()) {
+          displayNode(subTree, level + 1);
+        }
       }
     }
   }
 
+  /**
+   * Gets a nicer representation of the size of a file.
+   * This is a java port of the javascript method implemented by John Strickler
+   * (http://blog.jbstrickler.com/2011/02/bytes-to-a-human-readable-string/)
+   * @param size
+   * @return A string with the size.
+   */
+  private String getHumanReadableSize(long size) {
+    String suffix[] = {"bytes", "KB", "MB", "GB", "TB", "PB"};
+    int tier = 0;
+
+    while(size >= 1024) {
+      size = size / 1024;
+      tier++;
+    }
+
+    return Math.round(size * 10) / 10 + " " + suffix[tier];
+  }
+
+  /**
+   * Builds the prefix for each node of the tree.
+   */
   class Prefix {
     private String getPrefix(int level) {
       StringBuilder sb = new StringBuilder();

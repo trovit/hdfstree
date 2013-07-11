@@ -24,6 +24,8 @@ public class TreeNode {
 
   private List<TreeNode> children;
   private String path;
+  private long size = 0l;
+  private boolean isDir = false;
 
   public TreeNode(String path) {
     this.path = path;
@@ -54,5 +56,32 @@ public class TreeNode {
 
   public int getChildrenSize() {
     return children.size();
+  }
+
+  /**
+   * Gets the size of this file if the TreeNode represents a file or the size of its files + subdirectories
+   * if the node represents a directory.
+   * @return
+   */
+  public long getSize() {
+    if (size == 0) {
+      // need to get the size recursively.
+      for (TreeNode children : getChildren()) {
+        size = size + children.getSize();
+      }
+    }
+    return size;
+  }
+
+  public void setSize(long size) {
+    this.size = size;
+  }
+
+  public void setDir() {
+    this.isDir = true;
+  }
+
+  public boolean isDir() {
+    return isDir;
   }
 }

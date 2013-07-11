@@ -41,12 +41,16 @@ public class TreeBuilder {
   private void buildTreeRecursively(TreeNode treeNode, String currentPath, int level) {
     // if has sub dirs.
     if (fsInspector.isDirectory(currentPath)) {
+      treeNode.setDir();
       // list the dirs.
-      List<String> subdirectories = fsInspector.listSubDirs(currentPath);
+      List<String> subdirectories = fsInspector.list(currentPath);
       for (String subDir : subdirectories) {
         TreeNode child = treeNode.addChild(subDir);
         buildTreeRecursively(child, fsInspector.addSubdirToCurrent(currentPath, subDir), level + 1);
       }
+    } else {
+      // it is a file, get the file size.
+      treeNode.setSize(fsInspector.getFileSize(currentPath));
     }
   }
 }

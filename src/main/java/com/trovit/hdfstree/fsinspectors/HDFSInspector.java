@@ -36,17 +36,6 @@ public class HDFSInspector implements FSInspector {
   }
 
   @Override
-  public boolean exists(String path) {
-    boolean exists = false;
-    try {
-      exists = fs.exists(new Path(path));
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    }
-    return exists;
-  }
-
-  @Override
   public boolean isDirectory(String path) {
     boolean isDir = false;
     try {
@@ -58,24 +47,35 @@ public class HDFSInspector implements FSInspector {
   }
 
   @Override
-  public List<String> listSubDirs(String currentPath) {
-    List<String> subdirs = Lists.newArrayList();
+  public List<String> list(String currentPath) {
+    List<String> subfiles = Lists.newArrayList();
     try {
       for (FileStatus fileStatus : fs.listStatus(new Path(currentPath))) {
         if (!fs.isFile(fileStatus.getPath())) {
-          subdirs.add(fileStatus.getPath().getName());
+          subfiles.add(fileStatus.getPath().getName());
         }
       }
     } catch (IOException e) {
       System.out.println(e.getMessage());
     }
-    return subdirs;
+    return subfiles;
   }
 
   @Override
   public String addSubdirToCurrent(String path, String subdir) {
     Path current = new Path(path, subdir);
     return current.toString();
+  }
+
+  @Override
+  public long getFileSize(String file) {
+    Path current = new Path(file);
+    try {
+      return fs.getFileStatus(current).getLen();
+    } catch (IOException e) {
+      System.out.println("Cannot read file: " + current.toString());
+      return 0;
+    }
   }
 
   private Configuration getHadoopConf() throws Exception {

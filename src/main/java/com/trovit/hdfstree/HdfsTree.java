@@ -59,6 +59,7 @@ public class HdfsTree {
     treeBuilder = new TreeBuilder(rootPath, fsInspector);
     TreeNode tree = treeBuilder.buildTree();
     Displayer displayer = new ConsoleDisplayer();
+    displayer.setDisplaySize();
     displayer.display(tree);
 
   }

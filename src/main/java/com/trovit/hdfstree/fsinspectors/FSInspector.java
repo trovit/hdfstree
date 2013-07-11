@@ -16,12 +16,6 @@ package com.trovit.hdfstree.fsinspectors;
 import java.util.List;
 
 public interface FSInspector {
-  /**
-   * Checks if a file exists.
-   * @param path Path to check.
-   * @return True iff the file already exists.
-   */
-  boolean exists(String path);
 
   /**
    * Checks if the file contained in the path is a directory.
@@ -31,10 +25,10 @@ public interface FSInspector {
   boolean isDirectory(String path);
 
   /**
-   * Gets the names (not total path) of the subdirectories for a given path.
+   * Gets the names (not total path) of the subdirectories & files for a given path.
    * @param currentPath
    */
-  List<String> listSubDirs(String currentPath);
+  List<String> list(String currentPath);
 
   /**
    * Gets the string representation of a path + its subdirectory.
@@ -43,4 +37,11 @@ public interface FSInspector {
    * @return A valid path with the subdirectory.
    */
   String addSubdirToCurrent(String path, String subdir);
+
+  /**
+   * Get the file size of the given file in bytes.
+   * @param file
+   * @return
+   */
+  long getFileSize(String file);
 }
