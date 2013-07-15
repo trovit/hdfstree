@@ -45,7 +45,7 @@ public class ConsoleDisplayer implements Displayer {
       String prefixString = prefix.getPrefix(level);
       System.out.print(prefixString + node.getPath());
       if (displaySize) {
-        System.out.println( " ["+getHumanReadableSize(node.getSize())+"]");
+        System.out.println( " [ "+getHumanReadableSize(node.getSize())+" ]");
       } else {
         System.out.println();
       }

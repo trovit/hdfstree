@@ -26,12 +26,15 @@ public class HdfsTree {
     Options options = new Options();
     options.addOption("l", false, "Use local filesystem.");
     options.addOption("p", true, "Path used as root for the tree.");
+    options.addOption("s", false, "Display the size of the directory");
 
     CommandLineParser parser = new PosixParser();
 
     TreeBuilder treeBuilder;
     FSInspector fsInspector = null;
     String rootPath = null;
+
+    Displayer displayer = new ConsoleDisplayer();
 
     try {
       CommandLine cmd = parser.parse( options, args);
@@ -49,6 +52,10 @@ public class HdfsTree {
       } else {
         throw new ParseException("Mandatory option (-p) is not specified.");
       }
+
+      if (cmd.hasOption("s")) {
+        displayer.setDisplaySize();
+      }
     } catch (ParseException e) {
       System.out.println(e.getMessage());
       HelpFormatter formatter = new HelpFormatter();
@@ -58,8 +65,6 @@ public class HdfsTree {
 
     treeBuilder = new TreeBuilder(rootPath, fsInspector);
     TreeNode tree = treeBuilder.buildTree();
-    Displayer displayer = new ConsoleDisplayer();
-    displayer.setDisplaySize();
     displayer.display(tree);
 
   }

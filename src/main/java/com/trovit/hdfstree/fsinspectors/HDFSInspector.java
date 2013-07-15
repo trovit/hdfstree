@@ -51,9 +51,7 @@ public class HDFSInspector implements FSInspector {
     List<String> subfiles = Lists.newArrayList();
     try {
       for (FileStatus fileStatus : fs.listStatus(new Path(currentPath))) {
-        if (!fs.isFile(fileStatus.getPath())) {
-          subfiles.add(fileStatus.getPath().getName());
-        }
+        subfiles.add(fileStatus.getPath().getName());
       }
     } catch (IOException e) {
       System.out.println(e.getMessage());
