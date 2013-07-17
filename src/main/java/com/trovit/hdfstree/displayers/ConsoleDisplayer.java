@@ -13,7 +13,10 @@
  */
 package com.trovit.hdfstree.displayers;
 
+import com.google.common.collect.Sets;
 import com.trovit.hdfstree.TreeNode;
+
+import java.util.Set;
 
 /**
  * Displays a tree on screen.
@@ -32,7 +35,7 @@ public class ConsoleDisplayer implements Displayer {
       tree.getSize();
     }
 
-    displayNode(tree, 0);
+    displayNode(tree, 0, true);
   }
 
   @Override
@@ -40,9 +43,12 @@ public class ConsoleDisplayer implements Displayer {
     displaySize = true;
   }
 
-  public void displayNode(TreeNode node, int level) {
+  public void displayNode(TreeNode node, int level, boolean isLastChild) {
     if (node.isDir()) {
-      String prefixString = prefix.getPrefix(level);
+      if (node.getChildrenSize() > 1) {
+        prefix.addMarker(level+1);
+      }
+      String prefixString = prefix.getPrefix(level, isLastChild);
       System.out.print(prefixString + node.getPath());
       if (displaySize) {
         System.out.println( " [ "+getHumanReadableSize(node.getSize())+" ]");
@@ -50,8 +56,12 @@ public class ConsoleDisplayer implements Displayer {
         System.out.println();
       }
       if (node.hasChildren()) {
+        boolean lastChild;
+        int counter = 0;
         for (TreeNode subTree : node.getChildren()) {
-          displayNode(subTree, level + 1);
+          lastChild = ((node.getChildrenSize()-1) == counter);
+          displayNode(subTree, level + 1, lastChild);
+          counter++;
         }
       }
     }
@@ -80,12 +90,32 @@ public class ConsoleDisplayer implements Displayer {
    * Builds the prefix for each node of the tree.
    */
   class Prefix {
-    private String getPrefix(int level) {
+    Set<Integer> markers = Sets.newTreeSet();
+
+    public void addMarker(int marker) {
+      markers.add(marker);
+    }
+
+    public void removeMarker(int marker) {
+      markers.remove(marker);
+    }
+
+    private String getPrefix(int level, boolean isLastChild) {
       StringBuilder sb = new StringBuilder();
       for (int i = 0; i < level; i++) {
-        sb.append("    ");
+        if (markers.contains(i)) {
+          sb.append("|");
+        } else {
+          sb.append(" ");
+        }
+        sb.append("   ");
       }
-      sb.append("-> ");
+      if (isLastChild) {
+        sb.append("└──");
+        removeMarker(level);
+      } else {
+        sb.append("├──");
+      }
 
       return sb.toString();
     }
