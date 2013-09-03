@@ -22,4 +22,6 @@ public interface Displayer {
 
   // display size as well.
   void setDisplaySize();
+
+  void setMaxDepth(int d);
 }

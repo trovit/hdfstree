@@ -23,6 +23,7 @@ import java.util.Set;
  */
 public class ConsoleDisplayer implements Displayer {
   Prefix prefix;
+  int maxDepth = 0;
 
   private boolean displaySize = false;
 
@@ -43,25 +44,32 @@ public class ConsoleDisplayer implements Displayer {
     displaySize = true;
   }
 
+  @Override
+  public void setMaxDepth(int d) {
+    this.maxDepth = d;
+  }
+
   public void displayNode(TreeNode node, int level, boolean isLastChild) {
-    if (node.isDir()) {
-      if (node.getChildrenSize() > 1) {
-        prefix.addMarker(level+1);
-      }
-      String prefixString = prefix.getPrefix(level, isLastChild);
-      System.out.print(prefixString + node.getPath());
-      if (displaySize) {
-        System.out.println( " [ "+getHumanReadableSize(node.getSize())+" ]");
-      } else {
-        System.out.println();
-      }
-      if (node.hasChildren()) {
-        boolean lastChild;
-        int counter = 0;
-        for (TreeNode subTree : node.getChildren()) {
-          lastChild = ((node.getChildrenSize()-1) == counter);
-          displayNode(subTree, level + 1, lastChild);
-          counter++;
+    if (maxDepth != 0 && maxDepth > level) {
+      if (node.isDir()) {
+        if (node.getChildrenSize() > 1) {
+          prefix.addMarker(level+1);
+        }
+        String prefixString = prefix.getPrefix(level, isLastChild);
+        System.out.print(prefixString + node.getPath());
+        if (displaySize) {
+          System.out.println( " [ "+getHumanReadableSize(node.getSize())+" ]");
+        } else {
+          System.out.println();
+        }
+        if (node.hasChildren()) {
+          boolean lastChild;
+          int counter = 0;
+          for (TreeNode subTree : node.getChildren()) {
+            lastChild = ((node.getChildrenSize()-1) == counter);
+            displayNode(subTree, level + 1, lastChild);
+            counter++;
+          }
         }
       }
     }

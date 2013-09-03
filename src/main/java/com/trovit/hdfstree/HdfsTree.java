@@ -27,6 +27,7 @@ public class HdfsTree {
     options.addOption("l", false, "Use local filesystem.");
     options.addOption("p", true, "Path used as root for the tree.");
     options.addOption("s", false, "Display the size of the directory");
+    options.addOption("d", true, "Maximum depth of the tree (when displaying)");
 
     CommandLineParser parser = new PosixParser();
 
@@ -51,6 +52,10 @@ public class HdfsTree {
         rootPath = cmd.getOptionValue("p");
       } else {
         throw new ParseException("Mandatory option (-p) is not specified.");
+      }
+
+      if (cmd.hasOption("d")) {
+        displayer.setMaxDepth(Integer.parseInt(cmd.getOptionValue("d")));
       }
 
       if (cmd.hasOption("s")) {
