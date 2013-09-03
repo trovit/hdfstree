@@ -9,6 +9,7 @@ To use it just copy the tool, add it to your path it's ready to use, it has 3 op
 * -p: Specifies the root path. This is mandatory.
 * -l: Specifies that you want to use the local filesystem instead of HDFS:
 * -s: Specifies that you want to see the size (in human readable format) next to each directory. 
+* -d: Specifies the maximum depth when displayin the tree.
 
 some examples: 
 
